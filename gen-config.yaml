@@ -1,0 +1,23 @@
+table_resource:
+  type: sql
+  json_dir: tables.json
+  db:
+    lang: postgres
+    host: localhost
+    username: postgres
+    password: root
+    port: 5432
+    database: boa
+frame:
+  lang: go
+  web: gin
+  orm: gorm
+  front_lib: vue
+  ui: element
+output:
+  ui: .
+  control:
+  domain:
+  dao:
+template_dir: .
+
