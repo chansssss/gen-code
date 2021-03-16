@@ -1,6 +1,8 @@
 table_resource:
   type: sql
   json_dir: tables.json
+  includes: feedbacks,users
+#  excludes: feedbacks,users
   db:
     lang: postgres
     host: localhost
@@ -15,9 +17,9 @@ frame:
   front_lib: vue
   ui: element
 output:
-  ui: .
-  control:
-  domain:
-  dao:
+  view: /Users/chen/Code/gen-code/temp/view
+  handler:  /Users/chen/Code/gen-code/temp/hanlder
+  protocol: /Users/chen/Code/gen-code/temp/protocol
+  model: /Users/chen/Code/gen-code/temp/model
 template_dir: .
 

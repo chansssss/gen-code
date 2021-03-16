@@ -1,9 +1,10 @@
 import json
-from sqlalchemy.orm import sessionmaker
-from builders import get_builder
+
+import builders
+from builders import get_builder, includes
 from sqlalchemy import create_engine, inspect
 
-from db_utils import get_db_drive
+from db_drive import get_db_drive
 
 
 class GenCode:
@@ -21,7 +22,12 @@ class GenCode:
 
     def _create_builder(self):
         self.back_end_builder = get_builder(self.config.back_end_lang,
-                                            {"web": self.config.back_end_web, "orm": self.config.back_end_orm})
+                                            {"web": self.config.back_end_web,
+                                             "orm": self.config.back_end_orm,
+                                             "web_output": self.config.output['handler'],
+                                             "protocol_output": self.config.output['protocol'],
+                                             "orm_output": self.config.output['model'],
+                                             })
         self.front_end_builder = get_builder(self.config.front_end_lib)
 
     def _set_tables(self):
@@ -38,7 +44,7 @@ class GenCode:
                                                self.config.db_database)
         engine = create_engine(sql_url)
         # 创建DBSession类型:
-        DBSession = sessionmaker(bind=engine)
+        # DBSession = sessionmaker(bind=engine)
         inspector = inspect(engine)
         schemas = inspector.get_schema_names()
 
@@ -89,6 +95,10 @@ class GenConfig:
     def parse(self, yaml):
         try:
             self.resource_type = yaml["table_resource"]["type"]
+            if "includes" in yaml["table_resource"]:
+                builders.includes = yaml["table_resource"]["includes"].split(",")
+            if "excludes" in yaml["table_resource"]:
+                builders.excludes = yaml["table_resource"]["excludes"].split(",")
         except:
             raise Exception('缺少table_resouce type,且可选值为sql或者json')
         if self.resource_type not in resource_types:
@@ -110,10 +120,10 @@ class GenConfig:
             self.front_end_ui = yaml["frame"]["ui"]
 
             self.output = {
-                'ui': yaml["output"]["ui"],
-                'control': yaml["output"]["control"],
-                'domain': yaml["output"]["domain"],
-                'dao': yaml["output"]["dao"]
+                'view': yaml["output"]["view"],
+                'handler': yaml["output"]["handler"],
+                'protocol': yaml["output"]["protocol"],
+                'model': yaml["output"]["model"]
             }
         except:
             raise Exception('参数配置文件有误，请检查后再运行。')

@@ -25,5 +25,5 @@ class PostgresDrive:
         if str_type.startswith('BOOLEAN'):
             return 'bool', 0
         if str_type.startswith('TEXT'):
-            return 'text', db_type.length
+            return 'string', db_type.length
         return 'string'

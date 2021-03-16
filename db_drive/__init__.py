@@ -1,4 +1,4 @@
-from db_utils.postgres_drive import PostgresDrive
+from db_drive.postgres_drive import PostgresDrive
 
 
 # 获取构造器工具类
